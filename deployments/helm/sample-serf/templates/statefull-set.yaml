@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: sample-serf
+spec:
+  selector:
+    matchLabels:
+      app: sample-serf # has to match .spec.template.metadata.labels
+  serviceName: sample-serf
+  replicas: 3 # by default is 1
+  template:
+    metadata:
+      labels:
+        app: sample-serf # has to match .spec.selector.matchLabels
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: sample-serf
+        image: docker-registry.default.svc:5000/{{ .Values.image.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: 7946-tcp
+          containerPort: 7946
+          protocol: TCP
+        - name: 8080-tcp
+          containerPort: 8080
+          protocol: TCP
+        env:
+        - name: CLUSTER_ADDRS
+          value: sample-serf-0.{{ .Values.service.serf.name}}:{{ .Values.service.serf.port}},sample-serf-1.{{ .Values.service.serf.name}}:{{ .Values.service.serf.port}},sample-serf-2.{{ .Values.service.serf.name}}:{{ .Values.service.serf.port}}
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+
+

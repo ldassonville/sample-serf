@@ -1,0 +1,17 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    openshift.io/host.generated: "true"
+  creationTimestamp: null
+  labels:
+    app: sample-serf
+  name: sample-serf
+spec:
+  port:
+    targetPort: 8080-tcp
+  to:
+    kind: Service
+    name: sample-serf
+    weight: 100
+  wildcardPolicy: None

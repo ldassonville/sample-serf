@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftWebConsole
+  creationTimestamp: null
+  labels:
+    app: sample-serf
+  name: sample-serf
+spec:
+  clusterIP: None
+  ports:
+  - name: 7946-tcp
+    port: 7946
+    protocol: TCP
+    targetPort: 7946
+  selector:
+    app: sample-serf
+
